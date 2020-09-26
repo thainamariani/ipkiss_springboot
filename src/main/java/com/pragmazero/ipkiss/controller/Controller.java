@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.pragmazero.ipkiss.pojo.Account;
 import com.pragmazero.ipkiss.pojo.Event;
 import com.pragmazero.ipkiss.repository.AccountRepository;
 
@@ -17,16 +18,31 @@ import com.pragmazero.ipkiss.repository.AccountRepository;
 @RestController
 public class Controller extends ResponseEntityExceptionHandler {
 
-	//@Autowired
+	// @Autowired
 	public AccountRepository repository;
 
 	@GetMapping("/")
 	public String home() {
 		return "Hi";
 	}
-	
-    @PostMapping("reset")
-    public void reset(){
-        repository = new AccountRepository();
-    }
+
+	@PostMapping("reset")
+	public void reset() {
+		repository = new AccountRepository();
+	}
+
+	@PostMapping("event")
+	public Long event(Event event) {
+		
+		if (event.getType().equals("deposit")) {
+			return event.getDestination();
+			
+		} else if (event.getType().equals("withdraw")) {
+			return event.getOrigin();
+		}
+		
+		return null;
+	}
+
+
 }
