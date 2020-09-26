@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pragmazero.ipkiss.pojo.Account;
-import com.pragmazero.ipkiss.pojo.Deposit;
 import com.pragmazero.ipkiss.pojo.Event;
-import com.pragmazero.ipkiss.pojo.Transfer;
-import com.pragmazero.ipkiss.pojo.Withdraw;
 
 public class AccountRepository {
 
@@ -17,17 +14,12 @@ public class AccountRepository {
 		accounts = new ArrayList<>();
 	}
 
-	public Account save(Account account, Event event) {
-		Account foundAccount = findById(account.getId());
-		if (!foundAccount.getId().equals(null)) {
-			account = update(foundAccount, event);
-		} else {
-			accounts.add(account);
-		}
+	public Account save(Account account) {
+		accounts.add(account);
 		return account;
 	}
 
-	public Account update(Account account, Event event) {
+	public Account update(Account account, double balance) {
 		double balance = account.getBalance();
 
 		if (event instanceof Deposit) {

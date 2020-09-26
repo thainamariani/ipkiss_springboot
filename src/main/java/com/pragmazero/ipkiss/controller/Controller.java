@@ -11,6 +11,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.pragmazero.ipkiss.pojo.Account;
 import com.pragmazero.ipkiss.pojo.Event;
 import com.pragmazero.ipkiss.repository.AccountRepository;
+import com.pragmazero.ipkiss.repository.Deposit;
+import com.pragmazero.ipkiss.repository.Transfer;
+import com.pragmazero.ipkiss.repository.Withdraw;
 
 //import com.pragmazero.ipkiss.repository.AccountRepository;
 
@@ -35,14 +38,38 @@ public class Controller extends ResponseEntityExceptionHandler {
 	public Long event(Event event) {
 		
 		if (event.getType().equals("deposit")) {
-			return event.getDestination();
-			
+			return event.getDestination();	
 		} else if (event.getType().equals("withdraw")) {
 			return event.getOrigin();
+		} else if (event.getType().equals("transfer")) {
+			return event.getOrigin();
 		}
-		
 		return null;
 	}
-
+	
+	public Account save(Long id, Event event) {
+		Account account = repository.findById(id);
+		if (!account.getId().equals(null)) {
+			computeBalance(account.getBalance());
+			double newBalance = actualBalance + amount;
+			account.setBalance(newBalance);
+		} else {
+			account = new Account(id, amount);
+			repository.save(account);
+		}
+		return account;
+	}
+	
+	public double computeBalance(Event event, double actualBalance) {
+		double newBalance = actualBalance;
+		if (event.getType().equals("deposit")) {
+			newBalance = actualBalance + event.getAmount();
+		} else if (event.getType().equals("withdraw")) {
+			newBalance = actualBalance - event.getAmount();
+		} //else if (event.getType().equals("transfer")) {
+			//return event.getOrigin();
+		//}
+		return newBalance;
+	}
 
 }
