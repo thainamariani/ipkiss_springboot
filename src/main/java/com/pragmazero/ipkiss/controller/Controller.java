@@ -36,40 +36,47 @@ public class Controller extends ResponseEntityExceptionHandler {
 
 	@PostMapping("event")
 	public Long event(Event event) {
-		
 		if (event.getType().equals("deposit")) {
-			return event.getDestination();	
+			deposit(event.getDestination(), event);
 		} else if (event.getType().equals("withdraw")) {
-			return event.getOrigin();
+			withdraw(event.getOrigin(), event);
 		} else if (event.getType().equals("transfer")) {
-			return event.getOrigin();
+			transfer(event.getOrigin(), event.getDestination());
 		}
 		return null;
 	}
-	
-	public Account save(Long id, Event event) {
-		Account account = repository.findById(id);
+
+	private void transfer(Long origin, Long destination, Event event) {
+		withdraw(origin, event);
+		
+		
+	}
+
+	public void deposit(Long destination, Event event) {
+		Account account = repository.findById(destination);
 		if (!account.getId().equals(null)) {
-			computeBalance(account.getBalance());
-			double newBalance = actualBalance + amount;
-			account.setBalance(newBalance);
+			//update account balance
+			double actualBalance = account.getBalance();
+			double newBalance = actualBalance + event.getAmount();
+			repository.update(account, newBalance);
 		} else {
-			account = new Account(id, amount);
+			//create new account
+			account = new Account(destination, event.getAmount());
 			repository.save(account);
 		}
-		return account;
+		//return account;
 	}
 	
-	public double computeBalance(Event event, double actualBalance) {
-		double newBalance = actualBalance;
-		if (event.getType().equals("deposit")) {
-			newBalance = actualBalance + event.getAmount();
-		} else if (event.getType().equals("withdraw")) {
-			newBalance = actualBalance - event.getAmount();
-		} //else if (event.getType().equals("transfer")) {
-			//return event.getOrigin();
-		//}
-		return newBalance;
+	private void withdraw(Long origin, Event event) {
+		Account account = repository.findById(origin);
+		if (!account.getId().equals(null)) {
+			//update account balance
+			double actualBalance = account.getBalance();
+			double newBalance = actualBalance - event.getAmount();
+			repository.update(account, newBalance);
+		} else {
+			//account not found
+		}
 	}
 
 }

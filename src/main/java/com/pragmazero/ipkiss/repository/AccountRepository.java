@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pragmazero.ipkiss.pojo.Account;
-import com.pragmazero.ipkiss.pojo.Event;
 
 public class AccountRepository {
 
@@ -19,16 +18,8 @@ public class AccountRepository {
 		return account;
 	}
 
-	public Account update(Account account, double balance) {
-		double balance = account.getBalance();
-
-		if (event instanceof Deposit) {
-			account.setBalance(balance + event.getAmount());
-		} else if (event instanceof Withdraw) {
-			account.setBalance(balance - event.getAmount());
-		} else if (event instanceof Transfer) {
-
-		}
+	public Account update(Account account, double newBalance) {
+		account.setBalance(newBalance);
 		return account;
 	}
 
