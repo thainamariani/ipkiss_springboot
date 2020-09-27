@@ -25,10 +25,19 @@ public class AccountRepository {
 
 	public Account findById(Long id) {
 		for (Account account : accounts) {
-			if (account.getId().equals(id)) {
+			if (account.getId() == id) {
 				return account;
 			}
 		}
 		return new Account();
 	}
+
+	public List<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(List<Account> accounts) {
+		this.accounts = accounts;
+	}
+
 }

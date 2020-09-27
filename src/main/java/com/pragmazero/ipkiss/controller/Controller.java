@@ -1,21 +1,27 @@
 package com.pragmazero.ipkiss.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.pragmazero.ipkiss.pojo.Account;
 import com.pragmazero.ipkiss.pojo.Event;
 import com.pragmazero.ipkiss.repository.AccountRepository;
-import com.pragmazero.ipkiss.repository.Deposit;
-import com.pragmazero.ipkiss.repository.Transfer;
-import com.pragmazero.ipkiss.repository.Withdraw;
-
-//import com.pragmazero.ipkiss.repository.AccountRepository;
 
 @ControllerAdvice
 @RestController
@@ -35,48 +41,57 @@ public class Controller extends ResponseEntityExceptionHandler {
 	}
 
 	@PostMapping("event")
-	public Long event(Event event) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public Map<String, Account> event(Event event) {
+		Map<String, Account> response = new HashMap<String, Account>();
 		if (event.getType().equals("deposit")) {
-			deposit(event.getDestination(), event);
+			Account destination = deposit(event.getDestination(), event);
+			response.put("destination", destination);
+			return response;
 		} else if (event.getType().equals("withdraw")) {
-			withdraw(event.getOrigin(), event);
+			Account origin = withdraw(event.getOrigin(), event);
+			response.put("origin", origin);
+			return response;
 		} else if (event.getType().equals("transfer")) {
-			transfer(event.getOrigin(), event.getDestination());
+			transfer(event.getOrigin(), event.getDestination(), event);
+			
 		}
 		return null;
 	}
 
-	private void transfer(Long origin, Long destination, Event event) {
-		withdraw(origin, event);
-		
-		
+	public void transfer(Long origin, Long destination, Event event) {
+		Account accountOrigin = withdraw(origin, event);
+		deposit(destination, event);
 	}
 
-	public void deposit(Long destination, Event event) {
+	public Account deposit(Long destination, Event event) {
 		Account account = repository.findById(destination);
-		if (!account.getId().equals(null)) {
-			//update account balance
+		if (account.getId() != null) {
+			// update account balance
 			double actualBalance = account.getBalance();
 			double newBalance = actualBalance + event.getAmount();
-			repository.update(account, newBalance);
+			return repository.update(account, newBalance);
 		} else {
-			//create new account
+			// create new account
 			account = new Account(destination, event.getAmount());
-			repository.save(account);
+			return repository.save(account);
 		}
-		//return account;
 	}
-	
-	private void withdraw(Long origin, Event event) {
+
+	public Account withdraw(Long origin, Event event) {
 		Account account = repository.findById(origin);
 		if (!account.getId().equals(null)) {
-			//update account balance
+			// update account balance
 			double actualBalance = account.getBalance();
 			double newBalance = actualBalance - event.getAmount();
-			repository.update(account, newBalance);
-		} else {
-			//account not found
+			return repository.update(account, newBalance);
 		}
+		return new Account();
+	}
+
+	@ExceptionHandler({ Exception.class })
+	public ResponseEntity<?> handleException(HttpServletRequest req, Exception e) {
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 }

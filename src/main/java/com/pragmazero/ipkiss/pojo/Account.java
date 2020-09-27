@@ -8,7 +8,6 @@ import javax.persistence.Id;
 @Entity
 public class Account {
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private double balance;
 	
@@ -17,12 +16,7 @@ public class Account {
 		this.balance = balance;
 	}
 	
-	public Account(double balance) {
-		this.balance = balance;
-	}
-	
 	public Account() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {
