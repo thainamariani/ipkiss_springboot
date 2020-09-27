@@ -47,22 +47,18 @@ public class Controller extends ResponseEntityExceptionHandler {
 		if (event.getType().equals("deposit")) {
 			Account destination = deposit(event.getDestination(), event);
 			response.put("destination", destination);
-			return response;
 		} else if (event.getType().equals("withdraw")) {
 			Account origin = withdraw(event.getOrigin(), event);
 			response.put("origin", origin);
-			return response;
 		} else if (event.getType().equals("transfer")) {
-			transfer(event.getOrigin(), event.getDestination(), event);
-			
+			Account accountOrigin = withdraw(event.getOrigin(), event);
+			Account accountDestination = deposit(event.getDestination(), event);
+			response.put("origin", accountOrigin);
+			response.put("destination", accountDestination);
 		}
-		return null;
+		return response;
 	}
 
-	public void transfer(Long origin, Long destination, Event event) {
-		Account accountOrigin = withdraw(origin, event);
-		deposit(destination, event);
-	}
 
 	public Account deposit(Long destination, Event event) {
 		Account account = repository.findById(destination);
