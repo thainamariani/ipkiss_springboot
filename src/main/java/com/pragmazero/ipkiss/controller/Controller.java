@@ -1,7 +1,6 @@
 package com.pragmazero.ipkiss.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.pragmazero.ipkiss.pojo.Account;
@@ -36,15 +34,18 @@ public class Controller extends ResponseEntityExceptionHandler {
 	}
 
 	@PostMapping("reset")
-	public void reset() {
+	public String reset() {
 		repository = new AccountRepository();
+		return "OK";
 	}
 	
     @GetMapping("balance")
     public Double getBalance(@RequestParam(name = "account_id") String id){
+    	System.out.println(id);
     	Account account = repository.findById(id);
     	return Optional.ofNullable(account.getBalance()).
-    			orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account does not exist"));
+    			orElseThrow(() -> new NullPointerException());
+    			//orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account does not exist"));
     }
 
 	@PostMapping("event")
@@ -94,7 +95,7 @@ public class Controller extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<?> handleException(HttpServletRequest req, Exception e) {
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
 	}
 
 }

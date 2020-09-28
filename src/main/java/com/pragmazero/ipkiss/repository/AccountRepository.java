@@ -25,7 +25,7 @@ public class AccountRepository {
 
 	public Account findById(String id) {
 		for (Account account : accounts) {
-			if (account.getId() == id) {
+			if (account.getId().equals(id)) {
 				return account;
 			}
 		}
