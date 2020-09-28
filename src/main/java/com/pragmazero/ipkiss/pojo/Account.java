@@ -9,9 +9,9 @@ import javax.persistence.Id;
 public class Account {
 	@Id
 	private Long id;
-	private double balance;
+	private Double balance;
 	
-	public Account(Long id, double balance) {
+	public Account(Long id, Double balance) {
 		this.id = id;
 		this.balance = balance;
 	}
@@ -27,11 +27,11 @@ public class Account {
 		this.id = id;
 	}
 	
-	public double getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
 	
-	public void setBalance(double balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
 
