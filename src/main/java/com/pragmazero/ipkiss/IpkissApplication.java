@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class IpkissApiApplication {
+public class IpkissApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IpkissApiApplication.class, args);
+		SpringApplication.run(IpkissApplication.class, args);
 	}
 
 }

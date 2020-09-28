@@ -8,10 +8,10 @@ import javax.persistence.Id;
 @Entity
 public class Account {
 	@Id
-	private Long id;
+	private String id;
 	private Double balance;
 	
-	public Account(Long id, Double balance) {
+	public Account(String id, Double balance) {
 		this.id = id;
 		this.balance = balance;
 	}
@@ -19,11 +19,11 @@ public class Account {
 	public Account() {
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 	
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

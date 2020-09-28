@@ -41,7 +41,7 @@ public class Controller extends ResponseEntityExceptionHandler {
 	}
 	
     @GetMapping("balance")
-    public Double getBalance(@RequestParam(name = "account_id") Long id){
+    public Double getBalance(@RequestParam(name = "account_id") String id){
     	Account account = repository.findById(id);
     	return Optional.ofNullable(account.getBalance()).
     			orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account does not exist"));
@@ -67,7 +67,7 @@ public class Controller extends ResponseEntityExceptionHandler {
 	}
 
 
-	public Account deposit(Long destination, Event event) {
+	public Account deposit(String destination, Event event) {
 		Account account = repository.findById(destination);
 		if (account.getId() != null) {
 			// update account balance
@@ -81,7 +81,7 @@ public class Controller extends ResponseEntityExceptionHandler {
 		}
 	}
 
-	public Account withdraw(Long origin, Event event) {
+	public Account withdraw(String origin, Event event) {
 		Account account = repository.findById(origin);
 		if (!account.getId().equals(null)) {
 			// update account balance
